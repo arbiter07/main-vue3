@@ -1,5 +1,7 @@
 <template>
-  <div>
+  <AppLoading v-if="loading" />
+  <AppError v-else-if="error" :message="error.message" />
+  <div v-else>
     <h2>게시글 수정</h2>
     <hr class="my-4" />
     <PostForm
@@ -18,7 +20,6 @@
         <button class="btn btn-primary">수정</button>
       </template>
     </PostForm>
-    <AppAlert :items="alerts" />
   </div>
 </template>
 
@@ -27,9 +28,14 @@ import { getPostById, udpatePost } from '@/api/posts';
 import { ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import PostForm from '@/components/posts/PostForm.vue';
+import { useAlert } from '@/composables/alert';
+
+const { vAleart, vSuccess } = useAlert();
 
 const router = useRouter();
 const route = useRoute();
+const error = ref(null);
+const loading = ref(false);
 
 const id = route.params.id;
 
@@ -41,11 +47,13 @@ const form = ref({
 
 const fetchPost = async () => {
   try {
+    loading.value = true;
     const { data } = await getPostById(id);
     setForm(data);
-  } catch (error) {
-    console.error('error', error);
-    valeart('네트워크오류', 'error');
+  } catch (e) {
+    error.value = e;
+  } finally {
+    loading.value = false;
   }
 };
 const setForm = ({ title, content, createdAt }) => {
@@ -55,14 +63,16 @@ const setForm = ({ title, content, createdAt }) => {
 };
 fetchPost();
 
+const editError = ref(null);
+const editLoading = ref(false);
+
 const edit = async () => {
   try {
     await udpatePost(id, { ...form.value });
-    valeart('수정이완료되었습니다!!!!!!!!!!!!!!!!!!!', 'success');
-    //router.push({ name: 'postDetail', params: { id } });
+    vSuccess('수정이 완료되었습니다.');
+    router.push({ name: 'postDetail', params: { id } });
   } catch (e) {
-    console.error('error', e);
-    valeart('네트워크오류', 'error');
+    vAleart(e.message);
   }
 };
 
@@ -76,15 +86,6 @@ const goDetailPage = () => {
 watch(form.value, newValue => {
   console.log(newValue);
 });
-
-//alert
-const alerts = ref([]);
-const valeart = (message, type = 'error') => {
-  alerts.value.push({ message, type });
-  setTimeout(() => {
-    alerts.value.shift();
-  }, 2000);
-};
 </script>
 
 <style lang="scss" scoped></style>

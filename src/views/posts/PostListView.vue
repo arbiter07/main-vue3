@@ -17,24 +17,27 @@
       </div>
     </form>
     <hr class="my-4" />
-    <AppGrid :items="posts">
-      <template v-slot="{ item }">
-        <PostItem
-          :title="item.title"
-          :content="item.content"
-          :created-at="item.createdAt"
-          @click="goPage(item.id)"
-          @modal="openModal(item)"
-        ></PostItem>
-      </template>
-    </AppGrid>
+    <AppLoading v-if="loading" />
+    <AppError v-else-if="error" :message="error.message" />
+    <template v-else>
+      <AppGrid :items="posts">
+        <template v-slot="{ item }">
+          <PostItem
+            :title="item.title"
+            :content="item.content"
+            :created-at="item.createdAt"
+            @click="goPage(item.id)"
+            @modal="openModal(item)"
+          ></PostItem>
+        </template>
+      </AppGrid>
 
-    <AppPagination
-      :current-page="params._page"
-      :page-count="pageCount"
-      @page="page => (params._page = page)"
-    />
-
+      <AppPagination
+        :current-page="params._page"
+        :page-count="pageCount"
+        @page="page => (params._page = page)"
+      />
+    </template>
     <Teleport to="#modal">
       <PostModal
         v-model="show"
@@ -61,6 +64,8 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const posts = ref([]);
+const error = ref(null);
+const loading = ref(false);
 const params = ref({
   _sort: 'createdAt',
   _order: 'desc',
@@ -81,11 +86,15 @@ const changeSelectBox = event => {
 
 const fetchPosts = async () => {
   try {
+    loading.value = true;
     const { data, headers } = await getPosts(params.value);
     posts.value = data;
     totalCount.value = headers['x-total-count'];
   } catch (e) {
     console.error('error', e);
+    error.value = e;
+  } finally {
+    loading.value = false;
   }
 };
 
