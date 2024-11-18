@@ -8,6 +8,7 @@
       {{ $dayjs(post.createdAt).format('YYYY. MM. DD HH:mm:ss') }}
     </p>
     <hr class="my-4" />
+    <AppError v-if="removeError" :message="removeError.message" />
     <div class="row g-2">
       <div class="col-auto">
         <button class="btn btn-outline-dark">이전글</button>
@@ -25,7 +26,22 @@
         </button>
       </div>
       <div class="col-auto">
-        <button @click="remove" class="btn btn-outline-danger">삭제</button>
+        <button
+          @click="remove"
+          class="btn btn-outline-danger"
+          :disabled="removeLoading"
+        >
+          <template v-if="removeLoading">
+            <span
+              class="spinner-grow spinner-grow-sm"
+              aria-hidden="true"
+            ></span>
+            <span class="visually-hidden" role="status">Loading...</span>
+          </template>
+          <template v-else>
+            <span>삭제</span>
+          </template>
+        </button>
       </div>
     </div>
   </div>
@@ -39,11 +55,12 @@ import { ref } from 'vue';
 const props = defineProps({
   id: [String, Number],
 });
-
 const router = useRouter();
+
+const post = ref({});
 const error = ref(null);
 const loading = ref(false);
-const post = ref({});
+
 const fetchPost = async () => {
   try {
     loading.value = true;
@@ -62,14 +79,20 @@ const setPost = ({ title, content, createdAt }) => {
 };
 fetchPost();
 
+const removeError = ref(null);
+const removeLoading = ref(false);
 const remove = async () => {
   try {
+    removeLoading.value = true;
     if (confirm('삭제 하시겠습니까?')) {
       await deletePost(props.id);
       router.push({ name: 'postList' });
     }
   } catch (error) {
     console.error('error', error);
+    removeError.value = error;
+  } finally {
+    removeLoading.value = false;
   }
 };
 

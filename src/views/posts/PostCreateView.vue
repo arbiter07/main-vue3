@@ -35,15 +35,14 @@ import PostForm from '@/components/posts/PostForm.vue';
 import { useAlert } from '@/composables/alert';
 
 const { vAleart, vSuccess } = useAlert();
-
-const loading = ref(false);
-const error = ref(null);
-
 const router = useRouter();
+
 const form = ref({
   title: null,
   content: null,
 });
+const loading = ref(false);
+const error = ref(null);
 
 const save = async () => {
   try {
