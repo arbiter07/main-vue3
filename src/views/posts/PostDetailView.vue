@@ -55,11 +55,12 @@ import { ref } from 'vue';
 const props = defineProps({
   id: [String, Number],
 });
-
 const router = useRouter();
+
+const post = ref({});
 const error = ref(null);
 const loading = ref(false);
-const post = ref({});
+
 const fetchPost = async () => {
   try {
     loading.value = true;
