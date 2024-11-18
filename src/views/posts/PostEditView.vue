@@ -4,6 +4,7 @@
   <div v-else>
     <h2>게시글 수정</h2>
     <hr class="my-4" />
+    <AppError v-if="editError" :message="editError.message" />
     <PostForm
       @submit.prevent="edit"
       v-model:title="form.title"
@@ -17,7 +18,18 @@
         >
           취소
         </button>
-        <button class="btn btn-primary">수정</button>
+        <button class="btn btn-primary" :disabled="editLoading">
+          <template v-if="editLoading">
+            <span
+              class="spinner-grow spinner-grow-sm"
+              aria-hidden="true"
+            ></span>
+            <span class="visually-hidden" role="status">Loading...</span>
+          </template>
+          <template v-else>
+            <span>수정</span>
+          </template>
+        </button>
       </template>
     </PostForm>
   </div>
@@ -34,8 +46,6 @@ const { vAleart, vSuccess } = useAlert();
 
 const router = useRouter();
 const route = useRoute();
-const error = ref(null);
-const loading = ref(false);
 
 const id = route.params.id;
 
@@ -44,6 +54,8 @@ const form = ref({
   content: null,
   createdAt: null,
 });
+const error = ref(null);
+const loading = ref(false);
 
 const fetchPost = async () => {
   try {
@@ -68,11 +80,15 @@ const editLoading = ref(false);
 
 const edit = async () => {
   try {
+    editLoading.value = true;
     await udpatePost(id, { ...form.value });
     vSuccess('수정이 완료되었습니다.');
     router.push({ name: 'postDetail', params: { id } });
   } catch (e) {
     vAleart(e.message);
+    editError.value = e;
+  } finally {
+    editLoading.value = false;
   }
 };
 
