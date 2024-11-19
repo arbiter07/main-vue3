@@ -49,53 +49,41 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
-import { deletePost, getPostById } from '@/api/posts';
-import { ref } from 'vue';
+import { useAxios } from '@/hooks/useAxios';
+import { useAlert } from '@/composables/alert';
+
+const { vAleart, vSuccess } = useAlert();
 
 const props = defineProps({
   id: [String, Number],
 });
 const router = useRouter();
 
-const post = ref({});
-const error = ref(null);
-const loading = ref(false);
-
-const fetchPost = async () => {
-  try {
-    loading.value = true;
-    const { data } = await getPostById(props.id);
-    setPost(data);
-  } catch (error) {
-    error.value = error;
-  } finally {
-    loading.value = false;
-  }
-};
-const setPost = ({ title, content, createdAt }) => {
-  post.value.title = title;
-  post.value.content = content;
-  post.value.createdAt = createdAt;
-};
-fetchPost();
-
-const removeError = ref(null);
-const removeLoading = ref(false);
-const remove = async () => {
-  try {
-    removeLoading.value = true;
-    if (confirm('삭제 하시겠습니까?')) {
-      await deletePost(props.id);
+const { error, loading, data: post } = useAxios(`/posts/${props.id}`);
+const {
+  error: removeError,
+  loading: removeLoading,
+  execute,
+} = useAxios(
+  `/posts/${props.id}`,
+  { method: 'delete' },
+  {
+    immediate: false,
+    onSuccess: () => {
+      vSuccess('삭제가 완료되었습니다.');
       router.push({ name: 'postList' });
-    }
-  } catch (error) {
-    console.error('error', error);
-    removeError.value = error;
-  } finally {
-    removeLoading.value = false;
+    },
+    onError: err => {
+      vAleart(err.message);
+    },
+  },
+);
+
+const remove = async () => {
+  if (confirm('삭제 하시겠습니까?')) {
+    execute();
   }
 };
-
 const goListPage = () => {
   router.push({
     name: 'postList',

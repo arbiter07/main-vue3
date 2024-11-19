@@ -8,4 +8,4 @@ function create(baseURL, options) {
   return instance;
 }
 
-export const _axios = create('http://localhost:5000');
+export const _axios = create(import.meta.env.VITE_APP_API_URL);

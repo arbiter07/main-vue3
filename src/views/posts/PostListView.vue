@@ -58,14 +58,11 @@
 import PostItem from '@/components/posts/PostItem.vue';
 import PostDetailView from './PostDetailView.vue';
 import PostModal from '@/components/posts/PostModal.vue';
-import { computed, ref, watchEffect } from 'vue';
-import { getPosts } from '@/api/posts';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useAxios } from '@/hooks/useAxios';
 
 const router = useRouter();
-const posts = ref([]);
-const error = ref(null);
-const loading = ref(false);
 const params = ref({
   _sort: 'createdAt',
   _order: 'desc',
@@ -73,8 +70,18 @@ const params = ref({
   _limit: 3,
   title_like: '',
 });
+
+const {
+  response,
+  data: posts,
+  error,
+  loading,
+} = useAxios('/posts', { method: 'get', params });
+
 // pagination
-const totalCount = ref(0);
+const totalCount = computed(
+  () => response.value?.headers['x-total-count'] || 0,
+);
 const pageCount = computed(() =>
   Math.ceil(totalCount.value / params.value._limit),
 );
@@ -83,24 +90,6 @@ const changeSelectBox = event => {
   params.value._limit = event.target.value;
   params.value._page = 1;
 };
-
-const fetchPosts = async () => {
-  try {
-    loading.value = true;
-    const { data, headers } = await getPosts(params.value);
-    posts.value = data;
-    totalCount.value = headers['x-total-count'];
-  } catch (e) {
-    console.error('error', e);
-    error.value = e;
-  } finally {
-    loading.value = false;
-  }
-};
-
-// watch와 다르게 초기에 한번 실행됨. params가 변경될때 callback
-watchEffect(fetchPosts);
-
 const goPage = id => {
   router.push({
     name: 'postDetail',
@@ -111,7 +100,6 @@ const goPage = id => {
 };
 
 //modal
-
 const modalTitle = ref('');
 const modalContent = ref('');
 const modalCreatedAt = ref('');
