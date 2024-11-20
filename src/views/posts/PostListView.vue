@@ -20,7 +20,7 @@
     <AppLoading v-if="loading" />
     <AppError v-else-if="error" :message="error.message" />
     <template v-else>
-      <AppGrid :items="posts">
+      <AppGrid v-if="posts" :items="posts">
         <template v-slot="{ item }">
           <PostItem
             :title="item.title"

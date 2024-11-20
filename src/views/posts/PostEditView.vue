@@ -6,6 +6,7 @@
     <hr class="my-4" />
     <AppError v-if="editError" :message="editError.message" />
     <PostForm
+      v-if="form"
       @submit.prevent="edit"
       v-model:title="form.title"
       v-model:content="form.content"
