@@ -37,7 +37,6 @@
 </template>
 
 <script setup>
-import { watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import PostForm from '@/components/posts/PostForm.vue';
 import { useAlert } from '@/composables/alert';
@@ -83,10 +82,6 @@ const goDetailPage = () => {
     params: { id: id },
   });
 };
-
-watch(form.value, newValue => {
-  console.log(newValue);
-});
 </script>
 
 <style lang="scss" scoped></style>

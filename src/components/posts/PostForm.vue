@@ -28,11 +28,21 @@
 </template>
 
 <script setup>
-defineProps({
+import { watch } from 'vue';
+
+const props = defineProps({
   title: String,
   content: String,
 });
 const emit = defineEmits(['update:title', 'update:content']);
+
+watch(
+  () => props,
+  newValue => {
+    console.log('props 데이터 변경:', newValue);
+  },
+  { deep: true },
+);
 </script>
 
 <style lang="scss" scoped></style>
