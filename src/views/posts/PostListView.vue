@@ -28,6 +28,7 @@
             :created-at="item.createdAt"
             @click="goPage(item.id)"
             @modal="openModal(item)"
+            @preview="selectPreview(item.id)"
           ></PostItem>
         </template>
       </AppGrid>
@@ -48,8 +49,8 @@
     </Teleport>
 
     <hr class="my-5" />
-    <AppCard v-if="posts && posts.length > 0">
-      <PostDetailView :id="posts[0].id"></PostDetailView>
+    <AppCard v-if="previewId">
+      <PostDetailView :id="previewId"></PostDetailView>
     </AppCard>
   </div>
 </template>
@@ -85,6 +86,11 @@ const totalCount = computed(
 const pageCount = computed(() =>
   Math.ceil(totalCount.value / params.value._limit),
 );
+
+const selectPreview = id => {
+  previewId.value = id;
+};
+const previewId = ref(null);
 
 const changeSelectBox = event => {
   params.value._limit = event.target.value;

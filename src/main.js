@@ -5,6 +5,7 @@ import globalDirectives from './plugin/global-directives';
 import dayjs from './plugin/dayjs';
 
 import { createApp } from 'vue';
+import { createPinia } from 'pinia';
 import App from './App.vue';
 import router from '@/router';
 
@@ -12,6 +13,7 @@ const app = createApp(App);
 app.use(globalDirectives);
 app.use(dayjs);
 app.use(router);
+app.use(createPinia());
 app.mount('#app');
 
 import 'bootstrap/dist/js/bootstrap.js';

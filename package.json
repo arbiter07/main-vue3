@@ -17,6 +17,7 @@
     "bootstrap-icons": "^1.11.3",
     "dayjs": "^1.11.13",
     "imstall": "^1.0.38",
+    "pinia": "^2.2.6",
     "vue": "^3.5.12",
     "vue-router": "^4.4.5"
   },

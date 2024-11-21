@@ -51,6 +51,7 @@
 import { useRouter } from 'vue-router';
 import { useAxios } from '@/hooks/useAxios';
 import { useAlert } from '@/composables/alert';
+import { computed } from 'vue';
 
 const { vAleart, vSuccess } = useAlert();
 
@@ -59,7 +60,8 @@ const props = defineProps({
 });
 const router = useRouter();
 
-const { error, loading, data: post } = useAxios(`/posts/${props.id}`);
+const url = computed(() => `/posts/${props.id}`);
+const { error, loading, data: post } = useAxios(url);
 const {
   error: removeError,
   loading: removeLoading,

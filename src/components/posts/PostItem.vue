@@ -12,6 +12,9 @@
         <button class="btn p-0" @click.stop="$emit('modal')">
           <i class="bi bi-emoji-sunglasses"></i>
         </button>
+        <button class="btn p-0" @click.stop="$emit('preview')">
+          <i class="bi bi-airplane"></i>
+        </button>
       </div>
     </template>
   </AppCard>
@@ -32,7 +35,7 @@ const props = defineProps({
     type: [String, Date, Number],
   },
 });
-defineEmits(['modal']);
+defineEmits(['modal', 'preview']);
 
 const dayjs = inject('dayjs');
 const createdDate = computed(() =>
