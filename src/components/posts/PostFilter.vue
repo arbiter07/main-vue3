@@ -3,21 +3,21 @@
     <div class="row g-3">
       <div class="col">
         <input
-          :vakye="title"
-          @input="$emit('update:title', $event.target.value)"
+          :value="title"
+          @input="changeTitle"
           type="text"
           class="form-control"
         />
       </div>
       <div class="col-3">
         <select
-          :vakye="limit"
+          :value="limit"
           @input="$emit('update:limit', $event.target.value)"
           class="form-select"
         >
-          <option value="3">3개씩보기</option>
           <option value="6">6개씩보기</option>
-          <option value="9">9개씩보기</option>
+          <option value="12">12개씩보기</option>
+          <option value="18">18개씩보기</option>
         </select>
       </div>
     </div>
@@ -27,9 +27,14 @@
 <script setup>
 defineProps({
   title: String,
-  limit: Number,
+  limit: [Number, String],
 });
-defineEmits(['update:title', 'update:limit']);
+const emit = defineEmits(['update:title', 'update:limit']);
+const changeTitle = e => {
+  setTimeout(() => {
+    emit('update:title', e.target.value);
+  }, 500);
+};
 </script>
 
 <style lang="scss" scoped></style>

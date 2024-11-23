@@ -2,25 +2,19 @@
   <div>
     <h2>게시글 목록</h2>
     <hr class="my-4" />
-    <form @submit.prevent>
-      <div class="row g-3">
-        <div class="col">
-          <input v-model="params.title_like" type="text" class="form-control" />
-        </div>
-        <div class="col-3">
-          <select @change="changeSelectBox($event)" class="form-select">
-            <option value="3">3개씩보기</option>
-            <option value="6">6개씩보기</option>
-            <option value="9">9개씩보기</option>
-          </select>
-        </div>
-      </div>
-    </form>
+    <PostFilter
+      v-model:title="params.title_like"
+      :limit="params._limit"
+      @update:limit="changeSelectBox"
+    ></PostFilter>
     <hr class="my-4" />
     <AppLoading v-if="loading" />
     <AppError v-else-if="error" :message="error.message" />
+    <template v-else-if="!isExist">
+      <p calass="text-center py-5 text-muted">No result !</p>
+    </template>
     <template v-else>
-      <AppGrid v-if="posts" :items="posts">
+      <AppGrid v-if="posts" :items="posts" col-class="col-12 col-md-6 col-lg-4">
         <template v-slot="{ item }">
           <PostItem
             :title="item.title"
@@ -59,6 +53,7 @@
 import PostItem from '@/components/posts/PostItem.vue';
 import PostDetailView from './PostDetailView.vue';
 import PostModal from '@/components/posts/PostModal.vue';
+import PostFilter from '@/components/posts/PostFilter.vue';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAxios } from '@/hooks/useAxios';
@@ -68,8 +63,12 @@ const params = ref({
   _sort: 'createdAt',
   _order: 'desc',
   _page: 1,
-  _limit: 3,
+  _limit: 6,
   title_like: '',
+});
+
+const isExist = computed(() => {
+  return posts.value && posts.value.length > 0;
 });
 
 const {
@@ -92,8 +91,8 @@ const selectPreview = id => {
 };
 const previewId = ref(null);
 
-const changeSelectBox = event => {
-  params.value._limit = event.target.value;
+const changeSelectBox = limit => {
+  params.value._limit = limit;
   params.value._page = 1;
 };
 const goPage = id => {
