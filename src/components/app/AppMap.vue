@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue';
 const { VITE_KAKAO_MAP_KEY } = import.meta.env;
 
 const mapContainer = ref(null);
+const mapInstance = ref(null);
 
 onMounted(() => {
   if (!mapContainer.value) {
@@ -26,8 +27,7 @@ const loadKakaoMap = container => {
         level: 3, // 지도 확대 레벨
         maxLevel: 5, // 지도 축소 제한 레벨
       };
-      // const mapInstance =
-      new window.kakao.maps.Map(container, options); // 지도 생성
+      mapInstance.value = new window.kakao.maps.Map(container, options); // 지도 생성
     });
   };
 
@@ -35,8 +35,14 @@ const loadKakaoMap = container => {
     console.error('Failed to load Kakao Map script.');
   };
 };
+
+const setCenter = function () {
+  // 지도 중심을 이동 시킵니다
+  mapInstance.value.panTo(new window.kakao.maps.LatLng(35.452613, 126.570888));
+};
 </script>
 
 <template>
   <div ref="mapContainer" style="width: 100%; height: 70vh"></div>
+  <button @click="setCenter">BTN</button>
 </template>
