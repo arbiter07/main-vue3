@@ -1,18 +1,12 @@
 <template>
-  <div>Home입니당</div>
-  <p>{{ $route.path }}</p>
-  <p>{{ $route.name }}</p>
+  <p>{{ $route.path }} {{ $route.name }}</p>
   <p></p>
   <hr class="my-4" />
-  <AppGrid :items="items" v-slot="{ item }">
-    <AppCard> {{ item }}</AppCard>
-  </AppGrid>
+  <AppMap></AppMap>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-
-const items = ref(['사과', '바나나', '키위', '바나나']);
+import AppMap from '@/components/app/AppMap.vue';
 </script>
 
 <style lang="scss" scoped></style>

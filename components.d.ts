@@ -12,6 +12,7 @@ declare module 'vue' {
     AppError: typeof import('./src/components/app/AppError.vue')['default']
     AppGrid: typeof import('./src/components/app/AppGrid.vue')['default']
     AppLoading: typeof import('./src/components/app/AppLoading.vue')['default']
+    AppMap: typeof import('./src/components/app/AppMap.vue')['default']
     AppModal: typeof import('./src/components/app/AppModal.vue')['default']
     AppPagination: typeof import('./src/components/app/AppPagination.vue')['default']
     PostFilter: typeof import('./src/components/posts/PostFilter.vue')['default']

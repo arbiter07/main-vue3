@@ -21,7 +21,7 @@ const routes = [
   {
     path: '/',
     component: HomeView,
-    name: 'home이에용',
+    name: 'home',
   },
   {
     path: '/about',
