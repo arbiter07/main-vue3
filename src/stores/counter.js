@@ -12,4 +12,14 @@ export const useCounterStore = defineStore('counter', {
       this.counter++;
     },
   },
+  persist: {
+    enabled: true,
+    strategies: [
+      {
+        key: 'counterStore',
+        storage: localStorage,
+        paths: ['counter'],
+      },
+    ],
+  },
 });
